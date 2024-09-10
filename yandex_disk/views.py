@@ -1,7 +1,6 @@
 import requests
 from django.http import HttpResponse
 from django.shortcuts import render
-from requests import HTTPError
 from django.core.cache import cache
 
 TEMPLATE_FILES_LIST = 'files_list.html'
@@ -21,7 +20,7 @@ def files_list(request) -> HttpResponse:
     response = requests.get(url, params=params)
     try:
         response.raise_for_status()
-    except HTTPError:
+    except requests.HTTPError:
         return render(request, TEMPLATE_FILES_LIST, {'error': 'Невозможно получить файлы'})
 
     data = response.json()
