@@ -32,17 +32,15 @@
 				<ul id="file-list">
 					{% for item in items %}
 						{% if item.type == 'dir' %}
-							{% if item.public_url %}
-								<li data-filetype="{{ item.name }}">
+							<li data-filetype="{{ item.name }}">
+								{% if item.public_url %}
 									<a href="{% url 'files_list' %}?public_key={{ item.public_url }}">
 										{{ item.name }}
 									</a>
-								</li>
-							{% else %}
-								<li>
+								{% else %}
 									{{ item.name }}
-								</li>
-							{% endif %}
+								{% endif %}
+							</li>
 						{% else %}
 							<li data-filetype="{{ item.name | file_extension }}">
 								{{ item.name }} -
