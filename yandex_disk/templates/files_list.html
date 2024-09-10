@@ -1,0 +1,60 @@
+{% load static %}
+{% load custom_filters %}
+<!DOCTYPE html>
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+		<title>Файлы на Яндекс.Диске</title>
+	</head>
+	<body>
+		<div>
+			<h1>Файлы</h1>
+			<form method="GET">
+				<label>
+					<input type="text" name="public_key" placeholder="Введите публичный ключ">
+				</label>
+				<button type="submit">Получить список файлов</button>
+			</form>
+			<label for="file-type-filter"></label>
+			<select id="file-type-filter">
+				<option value="all" {% if file_type == 'all' %}selected{% endif %}>Все файлы</option>
+				<option value="documents" {% if file_type == 'documents' %}selected{% endif %}>Документы</option>
+				<option value="images" {% if file_type == 'images' %}selected{% endif %}>Изображения</option>
+				<option value="videos" {% if file_type == 'videos' %}selected{% endif %}>Видео</option>
+				<option value="audio" {% if file_type == 'audio' %}selected{% endif %}>Аудио</option>
+				<option value="dirs" {% if file_type == 'dirs' %}selected{% endif %}>Папки</option>
+			</select>
+
+			{% if error %}
+				<p class="error">{{ error }}</p>
+			{% endif %}
+			{% if items %}
+				<ul id="file-list">
+					{% for item in items %}
+						{% if item.type == 'dir' %}
+							{% if item.public_url %}
+								<li data-filetype="{{ item.name }}">
+									<a href="{% url 'files_list' %}?public_key={{ item.public_url }}">
+										{{ item.name }}
+									</a>
+								</li>
+							{% else %}
+								<li>
+									{{ item.name }}
+								</li>
+							{% endif %}
+						{% else %}
+							<li data-filetype="{{ item.name | file_extension }}">
+								{{ item.name }} -
+								<a href="{{ item.file }}">
+									Скачать
+								</a>
+							</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+			{% endif %}
+		</div>
+		<script src="{% static 'js/main.js' %}"></script>
+	</body>
+</html>
